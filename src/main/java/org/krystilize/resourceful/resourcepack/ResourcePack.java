@@ -3,8 +3,6 @@ package org.krystilize.resourceful.resourcepack;
 import org.jetbrains.annotations.NotNull;
 import org.krystilize.resourceful.resourcepack.compile.CompileComponent;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 public class ResourcePack {

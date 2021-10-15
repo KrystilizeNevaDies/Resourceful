@@ -17,12 +17,6 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.network.player.PlayerConnection;
 import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
-import org.krystilize.resourceful.resourcepack.ResourcePack;
-import org.krystilize.resourceful.resourcepack.ResourcePackBuilder;
-import org.krystilize.resourceful.shaders.Shaders;
-import org.krystilize.resourceful.shaders.builders.CoreShader;
-import org.krystilize.resourceful.shaders.type.CoreShaderType;
-import org.krystilize.resourceful.shaders.data.*;
 import org.krystilize.resourceful.util.NetworkingUtils;
 
 import java.io.File;
@@ -57,7 +51,7 @@ public class TestServer {
             player.setRespawnPoint(new Pos(0, 2, 0));
         });
 
-        var resourcePackBytes = generatePack().compile();
+        var resourcePackBytes = ExampleResourcePackGenerator.generatePack().compile();
         new ResourcePackServer(resourcePackBytes).start();
 
         new File("generatedResourcePack/").mkdirs();
@@ -116,43 +110,6 @@ public class TestServer {
 
         // Start the server on port 25565
         minecraftServer.start("0.0.0.0", 25565);
-    }
-
-    private static ResourcePack generatePack() {
-
-        ResourcePackBuilder builder = ResourcePack.builder();
-        builder.description("A generated resource pack");
-
-
-        { // Apply shader
-            CoreShader coreShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
-                    .uniforms(
-                            Uniforms.VANILLA_MODEL_VIEW_MATRIX,
-                            Uniforms.VANILLA_PROJECTION_MATRIX,
-                            Uniforms.of("ChunkOffset", 0.0F, 0.0F, 0.0F),
-                            Uniforms.of("ColorModulator", 1.0F, 0.8F, 1.0F, 1.0F),
-                            Uniforms.of("FogStart", 0.0F),
-                            Uniforms.of("FogEnd", 1.0F),
-                            Uniforms.of("FogColor", 0.0F, 0.0F, 0.0F, 0.0F)
-                    )
-                    .attributes(
-                            Attributes.VANILLA_POSITION,
-                            Attributes.VANILLA_COLOR,
-                            Attributes.VANILLA_UV0,
-                            Attributes.VANILLA_UV2,
-                            Attributes.VANILLA_NORMAL
-                    )
-                    .fragment(ExampleShader.class)
-                    .vertexIsPresent(true)
-                    .samplers(
-                            Samplers.SAMPLER0,
-                            Samplers.SAMPLER2
-                    )
-                    .build();
-
-            builder.component(coreShader);
-        }
-        return builder.build();
     }
 
     private static class GeneratorDemo implements ChunkGenerator {
