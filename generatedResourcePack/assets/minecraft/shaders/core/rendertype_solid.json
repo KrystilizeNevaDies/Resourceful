@@ -1,0 +1,120 @@
+{
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0",
+    "UV2",
+    "Normal"
+  ],
+  "uniforms": [
+    {
+      "name": "ModelViewMat",
+      "values": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "type": "matrix4x4",
+      "count": 16
+    },
+    {
+      "name": "ProjMat",
+      "values": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "type": "matrix4x4",
+      "count": 16
+    },
+    {
+      "name": "ChunkOffset",
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "type": "float",
+      "count": 3
+    },
+    {
+      "name": "ColorModulator",
+      "values": [
+        1.0,
+        0.8,
+        1.0,
+        1.0
+      ],
+      "type": "float",
+      "count": 4
+    },
+    {
+      "name": "FogStart",
+      "values": [
+        0.0
+      ],
+      "type": "float",
+      "count": 1
+    },
+    {
+      "name": "FogEnd",
+      "values": [
+        1.0
+      ],
+      "type": "float",
+      "count": 1
+    },
+    {
+      "name": "FogColor",
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "type": "float",
+      "count": 4
+    }
+  ],
+  "fragment": "rendertype_solid",
+  "samplers": [
+    {
+      "name": "Sampler0"
+    },
+    {
+      "name": "Sampler2"
+    }
+  ],
+  "vertex": "rendertype_solid",
+  "blend": {
+    "srcrgb": "srcalpha",
+    "func": "add",
+    "dstrgb": "1-srcalpha"
+  }
+}
