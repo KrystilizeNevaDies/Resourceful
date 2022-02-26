@@ -1,6 +1,5 @@
 package org.krystilize.resourceful;
 
-import com.google.common.hash.Hashing;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.GameMode;
@@ -15,7 +14,6 @@ import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.network.player.PlayerConnection;
-import net.minestom.server.world.biomes.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.krystilize.resourceful.util.NetworkingUtils;
 
@@ -23,9 +21,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.CryptoPrimitive;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 public class TestServer {
@@ -74,6 +76,8 @@ public class TestServer {
             PlayerConnection connection = player.getPlayerConnection();
             player.setGameMode(GameMode.CREATIVE);
 
+
+
             // Convert server address to address with new port
             String resultAddress = connection.getServerAddress();
             resultAddress = NetworkingUtils.changeAddressPort(resultAddress, 8001);
@@ -81,7 +85,7 @@ public class TestServer {
             player.setResourcePack(
                     net.minestom.server.resourcepack.ResourcePack.forced(
                             resultAddress,
-                            Hashing.sha1().hashBytes(resourcePackBytes).toString()
+                            sha1Hex(resourcePackBytes)
                     )
             );
             player.sendMessage(resultAddress);
@@ -112,6 +116,28 @@ public class TestServer {
         minecraftServer.start("0.0.0.0", 25565);
     }
 
+    public static @NotNull String sha1Hex(byte[] bytes) {
+        try {
+            // getInstance() method is called with algorithm SHA-1
+            MessageDigest md = MessageDigest.getInstance("SHA-1");
+
+            // digest() method is called
+            // to calculate message digest of the input string
+            // returned as array of byte
+            byte[] messageDigest = md.digest(bytes);
+
+            // byte[] to hex string
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : messageDigest) {
+                hexString.append(String.format("%02x", b));
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            // For specifying wrong message digest algorithms
+            throw new RuntimeException(e);
+        }
+    }
+
     private static class GeneratorDemo implements ChunkGenerator {
 
         @Override
@@ -135,10 +161,7 @@ public class TestServer {
                     }
                 }
         }
-        @Override
-        public void fillBiomes(Biome[] biomes, int chunkX, int chunkZ) {
-            Arrays.fill(biomes, Biome.PLAINS);
-        }
+
         @Override
         public List<ChunkPopulator> getPopulators() {
             return null;
