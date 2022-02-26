@@ -18,3 +18,17 @@ dependencies {
     // implementation 'com.github.KrystilizeNevaDies:JLSL:local'
     implementation files('libs/JLSL.jar')
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
