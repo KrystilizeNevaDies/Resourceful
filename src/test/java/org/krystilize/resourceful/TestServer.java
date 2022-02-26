@@ -100,18 +100,6 @@ public class TestServer {
             entity.setGlowing(true);
         });
 
-        // Remove my client's resource packs
-        File file = new File("C:\\Users\\Krystilize\\AppData\\Roaming\\.minecraft\\server-resource-packs");
-        if (file.exists())
-        try {
-            Files.walk(file.toPath())
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         // Start the server on port 25565
         minecraftServer.start("0.0.0.0", 25565);
     }
