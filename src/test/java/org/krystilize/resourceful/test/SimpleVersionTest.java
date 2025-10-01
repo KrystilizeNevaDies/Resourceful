@@ -14,7 +14,7 @@ public class SimpleVersionTest {
                 {
                     "pack": {
                         "description": "Generated resource pack",
-                        "pack_format": 26
+                        "pack_format": 34
                     }
                 }
                 """;
@@ -23,13 +23,14 @@ public class SimpleVersionTest {
         System.out.println(jsonTemplate);
         
         // Verify we can use modern switch expressions (Java 14+)
-        var formatName = switch (26) {
+        var formatName = switch (34) {
+            case 34 -> "Minecraft 1.21.9+";
             case 26 -> "Minecraft 1.21+";
             case 7 -> "Minecraft 1.17-1.18";
             default -> "Unknown version";
         };
         
-        System.out.println("Pack format 26 corresponds to: " + formatName);
+        System.out.println("Pack format 34 corresponds to: " + formatName);
         System.out.println("✓ SUCCESS: Java 21 compilation working with modern syntax features");
     }
 }

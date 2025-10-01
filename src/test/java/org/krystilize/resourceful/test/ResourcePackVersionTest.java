@@ -7,14 +7,14 @@ import org.krystilize.resourceful.resourcepack.ResourcePack;
  */
 public class ResourcePackVersionTest {
     public static void main(String[] args) {
-        // Test that the version has been updated to 26
+        // Test that the version has been updated to 34
         int version = ResourcePack.VERSION;
         System.out.println("Resource pack version: " + version);
         
-        if (version == 26) {
-            System.out.println("✓ SUCCESS: Resource pack version correctly updated to 26");
+        if (version == 34) {
+            System.out.println("✓ SUCCESS: Resource pack version correctly updated to 34");
         } else {
-            System.out.println("✗ FAILED: Expected version 26, but got " + version);
+            System.out.println("✗ FAILED: Expected version 34, but got " + version);
             System.exit(1);
         }
         
