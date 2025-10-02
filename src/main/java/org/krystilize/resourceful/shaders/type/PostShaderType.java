@@ -6,6 +6,7 @@ public interface PostShaderType {
 
     @NotNull String file();
 
+    PostShaderType BLUR = () -> "blur.json";
     PostShaderType CREEPER = () -> "creeper.json";
     PostShaderType SPIDER = () -> "spider.json";
     PostShaderType ENDERMAN = () -> "invert.json";
