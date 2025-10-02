@@ -10,7 +10,6 @@ import org.jglrxavpok.jlsl.glsl.VertexShaderEnvironment;
 import org.krystilize.resourceful.resourcepack.compile.CompileComponent;
 import org.krystilize.resourceful.resourcepack.compile.FileCompiler;
 import org.krystilize.resourceful.shaders.data.Sampler;
-import org.krystilize.resourceful.shaders.data.Uniform;
 import org.krystilize.resourceful.shaders.data.UniformBlock;
 
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ class GeneratingProgram implements Program, CompileComponent {
     final @NotNull Map<String, Object> blend;
     final @NotNull List<String> attributes;
     final @NotNull List<Sampler> samplers;
-    final @NotNull List<Uniform> uniforms;
     final @NotNull List<UniformBlock> uniformBlocks;
 
     @Expose(serialize = false, deserialize = false)
@@ -47,7 +45,6 @@ class GeneratingProgram implements Program, CompileComponent {
         blend = new HashMap<>(builder.blend);
         attributes = new ArrayList<>(builder.attributes);
         samplers = new ArrayList<>(builder.samplers);
-        uniforms = new ArrayList<>(builder.uniforms);
         uniformBlocks = new ArrayList<>(builder.uniformBlocks);
         vertexShader = builder.vertexShader;
         fragmentShader = builder.fragmentShader;
@@ -67,16 +64,13 @@ class GeneratingProgram implements Program, CompileComponent {
                 "samplers", samplers
         ));
 
-        // Use uniform blocks if available (for 1.21.6+), otherwise fall back to loose uniforms
+        // Use uniform blocks format (Minecraft 1.21.6+)
         if (!uniformBlocks.isEmpty()) {
             Map<String, Object> uniformBlocksMap = new HashMap<>();
             for (UniformBlock block : uniformBlocks) {
                 uniformBlocksMap.put(block.getName(), block.serialize());
             }
             serializingObject.put("uniforms", uniformBlocksMap);
-        } else if (!uniforms.isEmpty()) {
-            // Legacy loose uniforms format (pre-1.21.6)
-            serializingObject.put("uniforms", uniforms);
         }
 
         String nameWithoutJson = name.replace(".json", "");

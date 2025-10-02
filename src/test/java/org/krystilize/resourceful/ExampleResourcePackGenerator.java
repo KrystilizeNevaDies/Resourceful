@@ -13,7 +13,7 @@ import org.krystilize.resourceful.shaders.Shaders;
 import org.krystilize.resourceful.shaders.builders.CoreShader;
 import org.krystilize.resourceful.shaders.data.Attributes;
 import org.krystilize.resourceful.shaders.data.Samplers;
-import org.krystilize.resourceful.shaders.data.Uniforms;
+import org.krystilize.resourceful.shaders.data.UniformBlocks;
 import org.krystilize.resourceful.shaders.type.CoreShaderType;
 
 public class ExampleResourcePackGenerator {
@@ -23,14 +23,11 @@ public class ExampleResourcePackGenerator {
 
         { // Apply shader
             CoreShader coreShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
-                    .uniforms(
-                            Uniforms.VANILLA_MODEL_VIEW_MATRIX,
-                            Uniforms.VANILLA_PROJECTION_MATRIX,
-                            Uniforms.of("ChunkOffset", 0.0F, 0.0F, 0.0F),
-                            Uniforms.of("ColorModulator", 1.0F, 0.8F, 1.0F, 1.0F),
-                            Uniforms.of("FogStart", 0.0F),
-                            Uniforms.of("FogEnd", 1.0F),
-                            Uniforms.of("FogColor", 0.0F, 0.0F, 0.0F, 0.0F)
+                    .uniformBlocks(
+                            UniformBlocks.MATRICES,
+                            UniformBlocks.CHUNK,
+                            UniformBlocks.COLOR,
+                            UniformBlocks.FOG
                     )
                     .attributes(
                             Attributes.VANILLA_POSITION,

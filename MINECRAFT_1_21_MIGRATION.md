@@ -1,70 +1,118 @@
-# Resourceful - Minecraft 1.21.9 Update
+# Resourceful - Minecraft 1.21.9 Breaking Changes
 
-## Major Changes and Migration Guide
+## **⚠️ BREAKING CHANGES - Migration Required**
 
-### Resource Pack Format Update
+This version removes **ALL** backward compatibility and focuses exclusively on **Minecraft 1.21.9**. All legacy APIs have been removed.
 
-The resource pack format has been updated from **34** to **69** to support Minecraft 1.21.9. This ensures compatibility with the latest Minecraft version.
+## Critical Breaking Changes
 
+### 1. **Legacy Uniforms API Removed**
+
+**❌ REMOVED:**
 ```java
-// Updated automatically
-ResourcePack.VERSION // Now returns 69
-```
-
-### Critical: Uniform Blocks (1.21.6+)
-
-**Breaking Change**: Minecraft 1.21.6+ replaced loose uniforms with uniform blocks. This library now supports both formats with automatic backward compatibility.
-
-#### New Modern API (Recommended for 1.21.6+)
-
-```java
-CoreShader modernShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
-    .uniformBlocks(
-        UniformBlocks.MATRICES,    // Contains ModelViewMat, ProjMat
-        UniformBlocks.FOG,         // Contains FogStart, FogEnd, FogColor
-        UniformBlocks.COLOR,       // Contains ColorModulator
-        UniformBlocks.CHUNK        // Contains ChunkOffset
+// This API no longer exists
+CoreShader shader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
+    .uniforms(
+        Uniforms.VANILLA_MODEL_VIEW_MATRIX,
+        Uniforms.VANILLA_PROJECTION_MATRIX,
+        Uniforms.of("ColorModulator", 1.0f, 1.0f, 1.0f, 1.0f)
     )
-    .attributes(Attributes.VANILLA_POSITION, Attributes.VANILLA_COLOR)
-    .fragment(MyShaderClass.class)
     .build();
 ```
 
-#### Legacy API (Still Supported)
+**✅ REQUIRED:**
+```java
+// Use uniform blocks exclusively
+CoreShader shader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
+    .uniformBlocks(
+        UniformBlocks.MATRICES,    // Contains ModelViewMat + ProjMat
+        UniformBlocks.COLOR        // Contains ColorModulator
+    )
+    .build();
+```
+
+### 2. **Resource Pack Format**
+
+- **Updated from 34 → 69** for Minecraft 1.21.9 compatibility
+- **No backward compatibility** with older Minecraft versions
+
+### 3. **Uniform Class API Changes**
+
+**❌ REMOVED deprecated methods:**
+```java
+uniform.name()      // Use getName() instead
+uniform.value()     // Use getValues() instead  
+uniform.type()      // Use getType() instead
+```
+
+### 4. **ProgramBuilder API Changes**
+
+**❌ REMOVED:**
+- `uniforms()` method completely removed
+- Legacy uniform support removed from serialization
+
+**✅ ONLY SUPPORTED:**
+- `uniformBlocks()` method for all uniform configuration
+
+## Complete Migration Guide
+
+### **Before (Legacy - No Longer Works):**
 
 ```java
+import org.krystilize.resourceful.shaders.data.Uniforms;
+
 CoreShader legacyShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
     .uniforms(
         Uniforms.VANILLA_MODEL_VIEW_MATRIX,
         Uniforms.VANILLA_PROJECTION_MATRIX,
-        Uniforms.of("ColorModulator", 1.0f, 1.0f, 1.0f, 1.0f),
-        Uniforms.of("FogStart", 0.0f),
-        Uniforms.of("FogEnd", 1.0f),
-        Uniforms.of("FogColor", 0.0f, 0.0f, 0.0f, 0.0f)
+        Uniforms.of("ChunkOffset", 0.0F, 0.0F, 0.0F),
+        Uniforms.of("ColorModulator", 1.0F, 0.8F, 1.0F, 1.0F),
+        Uniforms.of("FogStart", 0.0F),
+        Uniforms.of("FogEnd", 1.0F),
+        Uniforms.of("FogColor", 0.0F, 0.0F, 0.0F, 0.0F)
     )
     .attributes(Attributes.VANILLA_POSITION, Attributes.VANILLA_COLOR)
     .fragment(MyShaderClass.class)
     .build();
 ```
 
-### Available Uniform Blocks
+### **After (Required - Uniform Blocks):**
 
-#### `UniformBlocks.MATRICES`
-- `ModelViewMat` (matrix4x4)
-- `ProjMat` (matrix4x4)
+```java
+import org.krystilize.resourceful.shaders.data.UniformBlocks;
 
-#### `UniformBlocks.FOG`
-- `FogStart` (float)
-- `FogEnd` (float)  
-- `FogColor` (vec4)
+CoreShader modernShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
+    .uniformBlocks(
+        UniformBlocks.MATRICES,    // ModelViewMat + ProjMat
+        UniformBlocks.CHUNK,       // ChunkOffset
+        UniformBlocks.COLOR,       // ColorModulator  
+        UniformBlocks.FOG          // FogStart + FogEnd + FogColor
+    )
+    .attributes(Attributes.VANILLA_POSITION, Attributes.VANILLA_COLOR)
+    .fragment(MyShaderClass.class)
+    .build();
+```
 
-#### `UniformBlocks.COLOR`
-- `ColorModulator` (vec4)
+## Available Uniform Blocks
 
-#### `UniformBlocks.CHUNK`
-- `ChunkOffset` (vec3)
+### `UniformBlocks.MATRICES`
+- `ModelViewMat` (matrix4x4) - Replaces `Uniforms.VANILLA_MODEL_VIEW_MATRIX`
+- `ProjMat` (matrix4x4) - Replaces `Uniforms.VANILLA_PROJECTION_MATRIX`
 
-### Custom Uniform Blocks
+### `UniformBlocks.FOG`
+- `FogStart` (float) - Replaces `Uniforms.of("FogStart", ...)`
+- `FogEnd` (float) - Replaces `Uniforms.of("FogEnd", ...)`  
+- `FogColor` (vec4) - Replaces `Uniforms.of("FogColor", ...)`
+
+### `UniformBlocks.COLOR`
+- `ColorModulator` (vec4) - Replaces `Uniforms.of("ColorModulator", ...)`
+
+### `UniformBlocks.CHUNK`
+- `ChunkOffset` (vec3) - Replaces `Uniforms.of("ChunkOffset", ...)`
+
+## Custom Uniform Blocks
+
+For custom uniforms, create your own blocks:
 
 ```java
 UniformBlock customBlock = UniformBlocks.block("MyCustomBlock",
@@ -78,78 +126,44 @@ CoreShader shader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
     .build();
 ```
 
-### New Post-Processing Shader
+## Migration Steps
 
-Added the missing `BLUR` post-processing shader:
+1. **Update imports:** Remove `Uniforms` import, add `UniformBlocks`
+2. **Replace method calls:** Change `.uniforms()` to `.uniformBlocks()`
+3. **Map loose uniforms to blocks:** Use the mapping table above
+4. **Update Uniform method calls:** Use non-deprecated methods
+5. **Test with Minecraft 1.21.9:** Verify compatibility
 
-```java
-PostShader blurShader = Shaders.post(PostShaderType.BLUR)
-    .fragment(BlurShaderClass.class)
-    .build();
-```
+## Version Support
 
-### Compatibility Matrix
+| Version | Support Status |
+|---------|----------------|
+| < 1.21.9 | ❌ **No longer supported** |
+| 1.21.9 | ✅ **Only supported version** |
 
-| Minecraft Version | Resource Pack Format | Uniform Format | Support Status |
-|-------------------|----------------------|----------------|----------------|
-| 1.21.0 - 1.21.1   | 34                   | Loose Uniforms | ✅ Legacy mode |
-| 1.21.2 - 1.21.5   | 42-55                | Loose Uniforms | ✅ Legacy mode |
-| 1.21.6+           | 63+                  | Uniform Blocks | ✅ Modern mode |
-| 1.21.9            | 69                   | Uniform Blocks | ✅ Current target |
+## Post-Processing Shaders
 
-### Migration Guide
+All 6 post-processing effects supported:
+- `PostShaderType.BLUR` (newly added)
+- `PostShaderType.CREEPER`
+- `PostShaderType.SPIDER`
+- `PostShaderType.ENDERMAN` 
+- `PostShaderType.GLOWING_ENTITY`
+- `PostShaderType.FABULOUS_GRAPHICS`
 
-#### For New Projects
-Use the new uniform blocks API exclusively:
+## Dependencies
 
-```java
-CoreShader shader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
-    .uniformBlocks(
-        UniformBlocks.MATRICES,
-        UniformBlocks.FOG,
-        UniformBlocks.COLOR
-    )
-    .build();
-```
-
-#### For Existing Projects
-Your existing code will continue to work unchanged. However, for best compatibility with modern Minecraft versions, consider migrating to uniform blocks:
-
-**Before (Legacy):**
-```java
-.uniforms(
-    Uniforms.VANILLA_MODEL_VIEW_MATRIX,
-    Uniforms.VANILLA_PROJECTION_MATRIX,
-    Uniforms.of("ColorModulator", 1.0f, 1.0f, 1.0f, 1.0f)
-)
-```
-
-**After (Modern):**
-```java
-.uniformBlocks(
-    UniformBlocks.MATRICES,  // Contains ModelViewMat + ProjMat
-    UniformBlocks.COLOR      // Contains ColorModulator
-)
-```
-
-### Testing
-
-The library includes comprehensive tests for both formats:
-
-```bash
-./gradlew test
-```
-
-Test classes:
-- `ResourcePackGenerationTest` - Basic functionality
-- `ModernResourcePackTest` - Uniform blocks functionality
-- `ResourcePackValidationTest` - Format validation and structure
-
-### Dependencies
-
-Added ASM dependencies for JLSL shader compilation:
+Required dependencies (automatically included):
 - `org.ow2.asm:asm:9.6`
 - `org.ow2.asm:asm-commons:9.6`
 - `org.ow2.asm:asm-util:9.6`
 
-No action required - these are automatically included.
+## Breaking Change Summary
+
+- ❌ **Removed:** `uniforms()` method from ProgramBuilder
+- ❌ **Removed:** Legacy uniform fallback logic
+- ❌ **Removed:** Deprecated methods from Uniform class
+- ❌ **Removed:** Support for Minecraft versions < 1.21.9
+- ❌ **Removed:** Loose uniform serialization format
+- ✅ **Required:** Uniform blocks for all shader configuration
+- ✅ **Required:** Minecraft 1.21.9 for generated resource packs

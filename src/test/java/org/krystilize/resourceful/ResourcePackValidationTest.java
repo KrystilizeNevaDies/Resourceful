@@ -55,58 +55,40 @@ public class ResourcePackValidationTest {
     }
 
     @Test
-    public void testModernUniformBlocksAreUsed() {
+    public void testUniformBlocksAreRequired() {
         ResourcePackBuilder builder = ResourcePack.builder();
-        builder.description("Test modern uniform blocks");
+        builder.description("Test uniform blocks are required");
 
-        CoreShader modernShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
+        CoreShader shader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
                 .uniformBlocks(UniformBlocks.MATRICES, UniformBlocks.FOG)
                 .build();
 
-        builder.component(modernShader);
+        builder.component(shader);
         ResourcePack pack = builder.build();
 
-        // This should not throw any exceptions and should produce valid output
+        // This should work with uniform blocks
         byte[] compiled = pack.compile();
         assertNotNull(compiled);
         assertTrue(compiled.length > 0);
     }
 
     @Test
-    public void testLegacyUniformsStillWork() {
+    public void testMultipleUniformBlocks() {
         ResourcePackBuilder builder = ResourcePack.builder();
-        builder.description("Test legacy loose uniforms");
+        builder.description("Test multiple uniform blocks");
 
-        CoreShader legacyShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
-                .uniforms(
-                        Uniforms.VANILLA_MODEL_VIEW_MATRIX,
-                        Uniforms.of("TestUniform", 1.0f)
+        CoreShader shader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
+                .uniformBlocks(
+                        UniformBlocks.MATRICES,
+                        UniformBlocks.FOG,
+                        UniformBlocks.COLOR,
+                        UniformBlocks.CHUNK
                 )
                 .build();
 
-        builder.component(legacyShader);
+        builder.component(shader);
         ResourcePack pack = builder.build();
 
-        // This should not throw any exceptions and should produce valid output
-        byte[] compiled = pack.compile();
-        assertNotNull(compiled);
-        assertTrue(compiled.length > 0);
-    }
-
-    @Test
-    public void testMixingUniformBlocksAndLegacyUniforms() {
-        ResourcePackBuilder builder = ResourcePack.builder();
-        builder.description("Test mixing uniform blocks and legacy uniforms");
-
-        CoreShader mixedShader = Shaders.core(CoreShaderType.VANILLA_SOLID_BLOCKS)
-                .uniformBlocks(UniformBlocks.MATRICES)
-                .uniforms(Uniforms.of("LegacyUniform", 1.0f))
-                .build();
-
-        builder.component(mixedShader);
-        ResourcePack pack = builder.build();
-
-        // When both are present, uniform blocks should take precedence
         byte[] compiled = pack.compile();
         assertNotNull(compiled);
         assertTrue(compiled.length > 0);

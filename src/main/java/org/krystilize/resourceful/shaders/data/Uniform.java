@@ -21,35 +21,11 @@ public class Uniform {
         return name;
     }
 
-    /**
-     * @deprecated Use getName() instead - maintained for compatibility
-     */
-    @Deprecated
-    public @NotNull String name() {
-        return name;
-    }
-
     public float[] getValues() {
         return values;
     }
 
-    /**
-     * @deprecated Use getValues() instead - maintained for compatibility
-     */
-    @Deprecated
-    public float[] value() {
-        return values;
-    }
-
     public @NotNull String getType() {
-        return type;
-    }
-
-    /**
-     * @deprecated Use getType() instead - maintained for compatibility
-     */
-    @Deprecated
-    public @NotNull String type() {
         return type;
     }
 
