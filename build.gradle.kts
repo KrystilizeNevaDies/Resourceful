@@ -17,6 +17,16 @@ dependencies {
     implementation("com.github.Minestom:Minestom:-SNAPSHOT")
     // implementation("com.github.KrystilizeNevaDies:JLSL:local")
     implementation(files("libs/JLSL.jar"))
+    implementation("org.ow2.asm:asm:9.6")
+    implementation("org.ow2.asm:asm-commons:9.6")
+    implementation("org.ow2.asm:asm-util:9.6")
+    
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 publishing {

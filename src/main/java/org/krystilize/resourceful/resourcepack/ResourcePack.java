@@ -6,7 +6,7 @@ import org.krystilize.resourceful.resourcepack.compile.CompileComponent;
 import java.util.Set;
 
 public class ResourcePack {
-    public static final int VERSION = 34;
+    public static final int VERSION = 69;
     final Set<CompileComponent> compileComponents;
     final String description;
     /**

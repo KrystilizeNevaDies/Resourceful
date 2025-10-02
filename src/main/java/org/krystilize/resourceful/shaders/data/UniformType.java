@@ -23,21 +23,21 @@ public class UniformType<T> {
             value[0] ? 1.0F : 0.0F, value[1] ? 1.0F : 0.0F, value[2] ? 1.0F : 0.0F, value[3] ? 1.0F : 0.0F,
     });
 
-    public static @NotNull UniformType<Integer[]> INT_VEC2 = new UniformType<>("int", value -> toFloatArray(value, Float.class::cast));
-    public static @NotNull UniformType<Integer[]> INT_VEC3 = new UniformType<>("int", value -> toFloatArray(value, Float.class::cast));
-    public static @NotNull UniformType<Integer[]> INT_VEC4 = new UniformType<>("int", value -> toFloatArray(value, Float.class::cast));
+    public static @NotNull UniformType<Integer[]> INT_VEC2 = new UniformType<>("ivec2", value -> toFloatArray(value, Float.class::cast));
+    public static @NotNull UniformType<Integer[]> INT_VEC3 = new UniformType<>("ivec3", value -> toFloatArray(value, Float.class::cast));
+    public static @NotNull UniformType<Integer[]> INT_VEC4 = new UniformType<>("ivec4", value -> toFloatArray(value, Float.class::cast));
 
     public static @NotNull UniformType<Integer[]> UINT_VEC2 = new UniformType<>("uint", value -> toFloatArray(value, Float.class::cast));
     public static @NotNull UniformType<Integer[]> UINT_VEC3 = new UniformType<>("uint", value -> toFloatArray(value, Float.class::cast));
     public static @NotNull UniformType<Integer[]> UINT_VEC4 = new UniformType<>("uint", value -> toFloatArray(value, Float.class::cast));
 
-    public static @NotNull UniformType<Float[]> FLOAT_VEC2 = new UniformType<>("float", value -> toFloatArray(value, Function.identity()));
-    public static @NotNull UniformType<Float[]> FLOAT_VEC3 = new UniformType<>("float", value -> toFloatArray(value, Function.identity()));
-    public static @NotNull UniformType<Float[]> FLOAT_VEC4 = new UniformType<>("float", value -> toFloatArray(value, Function.identity()));
+    public static @NotNull UniformType<Float[]> FLOAT_VEC2 = new UniformType<>("vec2", value -> toFloatArray(value, Function.identity()));
+    public static @NotNull UniformType<Float[]> FLOAT_VEC3 = new UniformType<>("vec3", value -> toFloatArray(value, Function.identity()));
+    public static @NotNull UniformType<Float[]> FLOAT_VEC4 = new UniformType<>("vec4", value -> toFloatArray(value, Function.identity()));
 
-    public static @NotNull UniformType<Double[]> DOUBLE_VEC2 = new UniformType<>("double", value -> toFloatArray(value, Float.class::cast));
-    public static @NotNull UniformType<Double[]> DOUBLE_VEC3 = new UniformType<>("double", value -> toFloatArray(value, Float.class::cast));
-    public static @NotNull UniformType<Double[]> DOUBLE_VEC4 = new UniformType<>("double", value -> toFloatArray(value, Float.class::cast));
+    public static @NotNull UniformType<Double[]> DOUBLE_VEC2 = new UniformType<>("vec2", value -> toFloatArray(value, Float.class::cast));
+    public static @NotNull UniformType<Double[]> DOUBLE_VEC3 = new UniformType<>("vec3", value -> toFloatArray(value, Float.class::cast));
+    public static @NotNull UniformType<Double[]> DOUBLE_VEC4 = new UniformType<>("vec4", value -> toFloatArray(value, Float.class::cast));
 
     public static @NotNull UniformType<Float[][]> MAT2X2 = new UniformType<>("matrix2x2", value -> new float[] {
             value[0][0], value[0][1], value[1][0], value[1][1],
@@ -96,6 +96,13 @@ public class UniformType<T> {
 
     public @NotNull String getDatatype() {
         return datatype;
+    }
+
+    /**
+     * Gets the type name as used in uniform blocks for Minecraft 1.21.6+
+     */
+    public @NotNull String typeName() {
+        return getDatatype();
     }
 
     public float[] toValues(@NotNull T type) {
