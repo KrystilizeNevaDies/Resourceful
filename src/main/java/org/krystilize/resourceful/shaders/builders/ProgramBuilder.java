@@ -21,6 +21,7 @@ public class ProgramBuilder<T, R> {
     final @NotNull List<String> attributes = new ArrayList<>();
     final @NotNull List<Sampler> samplers = new ArrayList<>();
     final @NotNull List<Uniform> uniforms = new ArrayList<>();
+    final @NotNull List<UniformBlock> uniformBlocks = new ArrayList<>();
 
     @Expose(serialize = false, deserialize = false)
     boolean vertexShaderPresent = false;
@@ -71,6 +72,15 @@ public class ProgramBuilder<T, R> {
 
     public @NotNull T uniforms(@NotNull Uniform... uniforms) {
         Collections.addAll(this.uniforms, uniforms);
+        return (T) this;
+    }
+
+    /**
+     * Adds uniform blocks for modern Minecraft versions (1.21.6+)
+     * Uniform blocks are preferred over loose uniforms
+     */
+    public @NotNull T uniformBlocks(@NotNull UniformBlock... uniformBlocks) {
+        Collections.addAll(this.uniformBlocks, uniformBlocks);
         return (T) this;
     }
 
